@@ -1,0 +1,140 @@
+Create app
+
+Already have the project setup (maven project)
+
+
+=======================================
+
+Add the java dependencies:
+
+
+<repositories>
+		<repository>
+			<id>JBoss Repository</id>
+			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
+		</repository>
+	</repositories>
+
+
+
+	<dependencies>
+		<dependency>
+			<groupId>org.jboss.spec</groupId>
+			<artifactId>jboss-javaee-7.0</artifactId>
+			<version>1.0.3.Final</version>
+			<type>pom</type>
+		</dependency>
+	</dependencies>
+
+
+=======================================
+
+Add this else it fails on missing xml
+	<properties>
+		<failOnMissingWebXml>false</failOnMissingWebXml>
+	</properties>
+
+
+
+=======================================
+
+Create config class:
+
+@ApplicationPath("api")
+public class RestConfig extends Application {
+
+}
+
+
+
+=======================================
+
+Add the end point:
+
+@Stateless
+@Path("hello")
+@Produces(MediaType.APPLICATION_JSON)
+public class HelloWorldResource {
+	
+	@GET
+	public Response getHelloWorld() {
+		return Response.ok(new MessageResponse("HELLO WORLD!")).build();
+	}
+}
+
+
+=======================================
+
+mvn clean package : show the war
+
+=======================================
+
+Converting to swarm app:
+
+
+comment out current dependencies:
+
+=======================================
+
+
+Add the wildfly swarm maven plugin:
+
+
+<plugin>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>wildfly-swarm-plugin</artifactId>
+  <version>${version.wildfly-swarm}</version>
+  <executions>
+    <execution>
+      <goals>
+        <goal>package</goal>
+      </goals>
+    </execution>
+  </executions>
+</plugin>
+
+
+=======================================
+
+add the fraction dependency:
+
+<version.wildfly.swarm>2016.10.0</version.wildfly.swarm>
+
+
+
+
+=======================================
+
+
+Add BOM
+
+
+
+<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.wildfly.swarm</groupId>
+				<artifactId>bom</artifactId>
+				<version>${version.wildfly.swarm}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
+=======================================
+
+Now add fraction dependencies 
+
+
+<dependency>
+		<groupId>org.wildfly.swarm</groupId>
+		<artifactId>jaxrs</artifactId>
+
+	</dependency>
+<dependency>
+			<groupId>org.wildfly.swarm</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>${version.wildfly.swarm}</version>
+		</dependency>
